@@ -28,7 +28,7 @@ other dealings in this Software without prior written authorization
 from the X Consortium.
 
 */
-/* $XFree86: xc/programs/xev/xev.c,v 1.13 2003/10/24 20:38:17 tsi Exp $ */
+/* $XFree86: xc/programs/xev/xev.c,v 1.14 2004/02/07 04:33:07 dawes Exp $ */
 
 /*
  * Author:  Jim Fulton, MIT X Consortium
@@ -85,8 +85,8 @@ dump (char *str, int len)
     printf("(");
     len--;
     while (len-- > 0)
-        printf("%02x ", *str++);
-    printf("%02x)", *str++);
+        printf("%02x ", (unsigned char) *str++);
+    printf("%02x)", (unsigned char) *str++);
 }
 
 static void
