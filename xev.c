@@ -85,8 +85,8 @@ dump (char *str, int len)
     printf("(");
     len--;
     while (len-- > 0)
-        printf("%02x ", *str++);
-    printf("%02x)", *str++);
+        printf("%02x ", (unsigned char) *str++);
+    printf("%02x)", (unsigned char) *str++);
 }
 
 static void
