@@ -21,8 +21,8 @@
 
 bin_PROGRAMS = xev
 
-xev_CFLAGS = $(DEP_CFLAGS)
-xev_LDADD = $(DEP_LIBS)
+xev_CFLAGS = $(XEV_CFLAGS)
+xev_LDADD = $(XEV_LIBS)
 
 xev_SOURCES =	\
         xev.c
