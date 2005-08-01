@@ -27,6 +27,6 @@ xev_LDADD = $(XEV_LIBS)
 xev_SOURCES =	\
         xev.c
 
-dist_man_MANS = \
+dist_man1_MANS = \
         xev.man
 
