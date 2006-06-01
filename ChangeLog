@@ -1,3 +1,12 @@
+2006-06-02  Daniel Stone  <daniel@freedesktop.org>
+
+	* configure.ac:
+	Bump to 1.0.2.
+
+	* xev.c:
+	Bug #6598: Run XFilterEvent() on all events, not just KeyPresses.
+	(Samuel Thibault)
+
 2005-12-20  Kevin E. Martin  <kem-at-freedesktop-dot-org>
 
 	* configure.ac:

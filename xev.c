@@ -157,10 +157,10 @@ do_KeyPress (XEvent *eventp)
         } else {
     	   printf ("\n");
         }
-
-        printf ("    XFilterEvent returns: %s\n", 
-                XFilterEvent (eventp, e->window) ? "True" : "False");
     }
+
+    printf ("    XFilterEvent returns: %s\n", 
+	    XFilterEvent (eventp, e->window) ? "True" : "False");
 }
 
 static void
