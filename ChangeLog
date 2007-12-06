@@ -1,3 +1,8 @@
+2007-12-06  James Cloos   <cloos@jhcloos.com>
+
+	* xev.c:
+	Bug #319: handle WM_DELETE_WINDOW. (Noah Levitt)
+
 2006-06-02  Daniel Stone  <daniel@freedesktop.org>
 
 	* configure.ac:
