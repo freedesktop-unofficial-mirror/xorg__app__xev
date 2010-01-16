@@ -690,6 +690,7 @@ usage (void)
 "    -bw pixels                          border width in pixels",
 "    -bs {NotUseful,WhenMapped,Always}   backingstore attribute",
 "    -id windowid                        use existing window",
+"    -root                               use root window",
 "    -s                                  set save-unders attribute",
 "    -name string                        window name",
 "    -rv                                 reverse video",
@@ -739,6 +740,7 @@ main (int argc, char **argv)
     int done;
     char *name = "Event Tester";
     Bool reverse = False;
+    Bool use_root = False;
     unsigned long back, fore;
     XIM xim;
     XIMStyles *xim_styles;
@@ -793,8 +795,17 @@ main (int argc, char **argv)
 		if (++i >= argc) usage ();
 		name = argv[i];
 		continue;
-	      case 'r':			/* -rv */
-		reverse = True;
+	      case 'r':
+		switch (arg[2]) {
+		  case 'o':		/* -root */
+		    use_root = True;
+		    continue;
+		  case 'v':		/* -rv */
+		    reverse = True;
+		    continue;
+		  default:
+		    usage ();
+		}
 		continue;
 	      case 's':			/* -s */
 		attr.save_under = True;
@@ -864,6 +875,9 @@ main (int argc, char **argv)
 			   SubstructureNotifyMask | SubstructureRedirectMask |
 			   FocusChangeMask | PropertyChangeMask |
 			   ColormapChangeMask | OwnerGrabButtonMask;
+
+    if (use_root)
+	w = RootWindow(dpy, screen);
 
     if (w) {
 	XGetWindowAttributes(dpy, w, &wattr);
