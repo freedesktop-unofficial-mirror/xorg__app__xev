@@ -1,4 +1,3 @@
-/* $XConsortium: xev.c,v 1.15 94/04/17 20:45:20 keith Exp $ */
 /*
 
 Copyright (c) 1988  X Consortium
@@ -28,7 +27,6 @@ other dealings in this Software without prior written authorization
 from the X Consortium.
 
 */
-/* $XFree86: xc/programs/xev/xev.c,v 1.13 2003/10/24 20:38:17 tsi Exp $ */
 
 /*
  * Author:  Jim Fulton, MIT X Consortium
