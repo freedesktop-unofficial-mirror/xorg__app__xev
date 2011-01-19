@@ -38,4 +38,7 @@ XORG_DEFAULT_OPTIONS
 # Checks for pkg-config packages
 PKG_CHECK_MODULES(XEV, x11)
 
-AC_OUTPUT([Makefile])
+AC_CONFIG_FILES([
+	Makefile
+	man/Makefile])
+AC_OUTPUT
