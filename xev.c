@@ -40,6 +40,7 @@ from the X Consortium.
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xproto.h>
+#include <X11/extensions/Xrandr.h>
 
 #define INNER_WINDOW_WIDTH 50
 #define INNER_WINDOW_HEIGHT 50
@@ -70,6 +71,9 @@ XIC xic = NULL;
 
 Atom wm_delete_window;
 Atom wm_protocols;
+
+Bool have_rr;
+int rr_event_base, rr_error_base;
 
 static void
 prologue (XEvent *eventp, char *event_name)
@@ -620,6 +624,191 @@ do_MappingNotify (XEvent *eventp)
     XRefreshKeyboardMapping(e);
 }
 
+static void
+print_SubPixelOrder (SubpixelOrder subpixel_order)
+{
+    switch (subpixel_order) {
+      case SubPixelUnknown:        printf ("SubPixelUnknown"); return;
+      case SubPixelHorizontalRGB:  printf ("SubPixelHorizontalRGB"); return;
+      case SubPixelHorizontalBGR:  printf ("SubPixelHorizontalBGR"); return;
+      case SubPixelVerticalRGB:    printf ("SubPixelVerticalRGB"); return;
+      case SubPixelVerticalBGR:    printf ("SubPixelVerticalBGR"); return;
+      case SubPixelNone:           printf ("SubPixelNone"); return;
+      default:                     printf ("%d", subpixel_order);
+    }
+}
+
+static void
+print_Rotation (Rotation rotation)
+{
+    if (rotation & RR_Rotate_0)
+        printf ("RR_Rotate_0");
+    else if (rotation & RR_Rotate_90)
+        printf ("RR_Rotate_90");
+    else if (rotation & RR_Rotate_180)
+        printf ("RR_Rotate_180");
+    else if (rotation & RR_Rotate_270)
+        printf ("RR_Rotate_270");
+    else {
+        printf ("%d", rotation);
+        return;
+    }
+    if (rotation & RR_Reflect_X)
+        printf (", RR_Reflect_X");
+    if (rotation & RR_Reflect_Y)
+        printf (", RR_Reflect_Y");
+}
+
+static void
+print_Connection (Connection connection)
+{
+    switch (connection) {
+      case RR_Connected:          printf ("RR_Connected"); return;
+      case RR_Disconnected:       printf ("RR_Disconnected"); return;
+      case RR_UnknownConnection:  printf ("RR_UnknownConnection"); return;
+      default:                    printf ("%d", connection);
+    }
+}
+
+static void
+do_RRScreenChangeNotify (XEvent *eventp)
+{
+    XRRScreenChangeNotifyEvent *e = (XRRScreenChangeNotifyEvent *) eventp;
+
+    XRRUpdateConfiguration (eventp);
+    printf ("    root 0x%lx, timestamp %lu, config_timestamp %lu\n",
+            e->root, e->timestamp, e->config_timestamp);
+    printf ("    size_index %hu", e->size_index);
+    printf (", subpixel_order ");
+    print_SubPixelOrder (e->subpixel_order);
+    printf ("\n    rotation ");
+    print_Rotation (e->rotation);
+    printf("\n    width %d, height %d, mwidth %d, mheight %d\n",
+           e->width, e->height, e->mwidth, e->mheight);
+}
+
+static void
+do_RRNotify_OutputChange (XEvent *eventp, XRRScreenResources *screen_resources)
+{
+    XRROutputChangeNotifyEvent *e = (XRROutputChangeNotifyEvent *) eventp;
+    XRROutputInfo *output_info = NULL;
+    XRRModeInfo *mode_info = NULL;
+
+    if (screen_resources) {
+        int i;
+
+        output_info = XRRGetOutputInfo (dpy, screen_resources, e->output);
+        for (i = 0; i < screen_resources->nmode; i++)
+            if (screen_resources->modes[i].id == e->mode) {
+                mode_info = &screen_resources->modes[i]; break;
+            }
+    }
+    printf ("    subtype XRROutputChangeNotifyEvent\n");
+    if (output_info)
+        printf ("    output %s, ", output_info->name);
+    else
+        printf ("    output %lu, ", e->output);
+    if (e->crtc)
+        printf("crtc %lu, ", e->crtc);
+    else
+        printf("crtc None, ");
+    if (mode_info)
+        printf ("mode %s (%dx%d)\n", mode_info->name, mode_info->width,
+                mode_info->height);
+    else if (e->mode)
+        printf ("mode %lu\n", e->mode);
+    else
+        printf("mode None\n");
+    printf ("    rotation ");
+    print_Rotation (e->rotation);
+    printf ("\n    connection ");
+    print_Connection (e->connection);
+    printf (", subpixel_order ");
+    print_SubPixelOrder (e->subpixel_order);
+    printf ("\n");
+    XRRFreeOutputInfo (output_info);
+}
+
+static void
+do_RRNotify_CrtcChange (XEvent *eventp, XRRScreenResources *screen_resources)
+{
+    XRRCrtcChangeNotifyEvent *e = (XRRCrtcChangeNotifyEvent *) eventp;
+    XRRModeInfo *mode_info = NULL;
+
+    if (screen_resources) {
+        int i;
+
+        for (i = 0; i < screen_resources->nmode; i++)
+            if (screen_resources->modes[i].id == e->mode) {
+                mode_info = &screen_resources->modes[i]; break;
+            }
+    }
+    printf ("    subtype XRRCrtcChangeNotifyEvent\n");
+    if (e->crtc)
+        printf("    crtc %lu, ", e->crtc);
+    else
+        printf("    crtc None, ");
+    if (mode_info)
+        printf ("mode %s, ", mode_info->name);
+    else if (e->mode)
+        printf ("mode %lu, ", e->mode);
+    else
+        printf("mode None, ");
+    printf ("rotation ");
+    print_Rotation (e->rotation);
+    printf ("\n    x %d, y %d, width %d, height %d\n",
+            e->x, e->y, e->width, e->height);
+}
+
+static void
+do_RRNotify_OutputProperty (XEvent *eventp,
+                            XRRScreenResources *screen_resources)
+{
+    XRROutputPropertyNotifyEvent *e = (XRROutputPropertyNotifyEvent *) eventp;
+    XRROutputInfo *output_info = NULL;
+    char *property = XGetAtomName (dpy, e->property);
+
+    if (screen_resources)
+        output_info = XRRGetOutputInfo (dpy, screen_resources, e->output);
+    printf ("    subtype XRROutputPropertyChangeNotifyEvent\n");
+    if (output_info)
+        printf ("    output %s, ", output_info->name);
+    else
+        printf ("    output %lu, ", e->output);
+    printf ("property %s, timestamp %lu, state ",
+            property, e->timestamp);
+    if (e->state == PropertyNewValue)
+        printf ("NewValue\n");
+    else if (e->state == PropertyDelete)
+        printf ("Delete\n");
+    else
+        printf ("%d\n", e->state);
+    XRRFreeOutputInfo (output_info);
+    if (property) XFree (property);
+}
+
+static void
+do_RRNotify (XEvent *eventp)
+{
+    XRRNotifyEvent *e = (XRRNotifyEvent *) eventp;
+    XRRScreenResources *screen_resources;
+
+    XRRUpdateConfiguration (eventp);
+    screen_resources = XRRGetScreenResources (dpy, e->window);
+    prologue (eventp, "RRNotify");
+    switch (e->subtype) {
+      case RRNotify_OutputChange:
+          do_RRNotify_OutputChange (eventp, screen_resources); break;
+      case RRNotify_CrtcChange:
+          do_RRNotify_CrtcChange (eventp, screen_resources); break;
+      case RRNotify_OutputProperty:
+          do_RRNotify_OutputProperty (eventp, screen_resources); break;
+      default:
+          printf ("    subtype %d\n", e->subtype);
+    }
+    XRRFreeScreenResources (screen_resources);
+}
+
 
 
 static void
@@ -935,6 +1124,21 @@ main (int argc, char **argv)
         }
     }
 
+    have_rr = XRRQueryExtension (dpy, &rr_event_base, &rr_error_base);
+    if (have_rr) {
+        int rr_major, rr_minor;
+
+        if (XRRQueryVersion (dpy, &rr_major, &rr_minor)) {
+            int mask = RRScreenChangeNotifyMask;
+
+            if (rr_major > 1
+                || (rr_major == 1 && rr_minor >= 2))
+                mask |= RRCrtcChangeNotifyMask | RROutputChangeNotifyMask |
+                        RROutputPropertyNotifyMask;
+            XRRSelectInput (dpy, w, mask);
+        }
+    }
+
     for (done = 0; !done; ) {
 	XEvent event;
 
@@ -1074,6 +1278,17 @@ main (int argc, char **argv)
 	    do_MappingNotify (&event);
 	    break;
 	  default:
+	    if (have_rr) {
+	        if (event.type == rr_event_base + RRScreenChangeNotify) {
+	            prologue (&event, "RRScreenChangeNotify");
+	            do_RRScreenChangeNotify (&event);
+	            break;
+	        }
+	        if (event.type == rr_event_base + RRNotify) {
+	            do_RRNotify (&event);
+	            break;
+	        }
+	    }
 	    printf ("Unknown event type %d\n", event.type);
 	    break;
 	}
