@@ -75,6 +75,8 @@ Atom wm_protocols;
 Bool have_rr;
 int rr_event_base, rr_error_base;
 
+static void usage (void) _X_NORETURN;
+
 static void
 prologue (XEvent *eventp, char *event_name)
 {
@@ -863,11 +865,6 @@ set_sizehints (XSizeHints *hintp, int min_width, int min_height,
     }
 }
 
-
-#if defined(__GNUC__) && \
-    ((__GNUC__ > 2) || ((__GNUC__ == 2) && (__GNUC_MINOR__ >= 7)))
-static void usage (void) __attribute__((__noreturn__));
-#endif
 static void
 usage (void)
 {
