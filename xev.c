@@ -512,7 +512,7 @@ do_PropertyNotify (XEvent *eventp)
     printf ("    atom 0x%lx (%s), time %lu, state %s\n",
 	   e->atom, aname ? aname : Unknown, e->time,  s);
 
-    if (aname) XFree (aname);
+    XFree (aname);
 }
 
 static void
@@ -524,7 +524,7 @@ do_SelectionClear (XEvent *eventp)
     printf ("    selection 0x%lx (%s), time %lu\n",
 	    e->selection, sname ? sname : Unknown, e->time);
 
-    if (sname) XFree (sname);
+    XFree (sname);
 }
 
 static void
@@ -541,9 +541,9 @@ do_SelectionRequest (XEvent *eventp)
 	    e->target, tname ? tname : Unknown, e->property,
 	    pname ? pname : Unknown, e->time);
 
-    if (sname) XFree (sname);
-    if (tname) XFree (tname);
-    if (pname) XFree (pname);
+    XFree (sname);
+    XFree (tname);
+    XFree (pname);
 }
 
 static void
@@ -560,9 +560,9 @@ do_SelectionNotify (XEvent *eventp)
     printf ("    property 0x%lx (%s), time %lu\n",
 	    e->property, pname ? pname : Unknown, e->time);
 
-    if (sname) XFree (sname);
-    if (tname) XFree (tname);
-    if (pname) XFree (pname);
+    XFree (sname);
+    XFree (tname);
+    XFree (pname);
 }
 
 static void
@@ -592,14 +592,14 @@ do_ClientMessage (XEvent *eventp)
         char *message = XGetAtomName (dpy, e->data.l[0]);
         printf ("    message_type 0x%lx (%s), format %d, message 0x%lx (%s)\n",
                 e->message_type, mname ? mname : Unknown, e->format, e->data.l[0], message);
-        if (message) XFree (message);
+        XFree (message);
     }
     else {
         printf ("    message_type 0x%lx (%s), format %d\n",
                 e->message_type, mname ? mname : Unknown, e->format);
     }
 
-    if (mname) XFree (mname);
+    XFree (mname);
 
     if (e->format == 32
         && e->message_type == wm_protocols
@@ -786,7 +786,7 @@ do_RRNotify_OutputProperty (XEvent *eventp,
     else
         printf ("%d\n", e->state);
     XRRFreeOutputInfo (output_info);
-    if (property) XFree (property);
+    XFree (property);
 }
 
 static void
