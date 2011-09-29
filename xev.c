@@ -55,7 +55,7 @@ from the X Consortium.
 #define OUTER_WINDOW_DEF_HEIGHT (OUTER_WINDOW_MIN_HEIGHT + 100)
 #define OUTER_WINDOW_DEF_X 100
 #define OUTER_WINDOW_DEF_Y 100
-				
+
 
 typedef unsigned long Pixel;
 
@@ -136,7 +136,7 @@ do_KeyPress (XEvent *eventp)
 	kc = XKeysymToKeycode(dpy, ks);
 	kc_set = True;
     }
-	
+
     printf ("    root 0x%lx, subw 0x%lx, time %lu, (%d,%d), root:(%d,%d),\n",
 	    e->root, e->subwindow, e->time, e->x, e->y, e->x_root, e->y_root);
     printf ("    state 0x%x, keycode %u (keysym 0x%lx, %s), same_screen %s,\n",
@@ -166,7 +166,7 @@ do_KeyPress (XEvent *eventp)
         }
     }
 
-    printf ("    XFilterEvent returns: %s\n", 
+    printf ("    XFilterEvent returns: %s\n",
 	    XFilterEvent (eventp, e->window) ? "True" : "False");
 }
 
@@ -407,7 +407,7 @@ do_ReparentNotify (XEvent *eventp)
 
     printf ("    event 0x%lx, window 0x%lx, parent 0x%lx,\n",
 	    e->event, e->window, e->parent);
-    printf ("    (%d,%d), override %s\n", e->x, e->y, 
+    printf ("    (%d,%d), override %s\n", e->x, e->y,
 	    e->override_redirect ? Yes : No);
 }
 
@@ -601,9 +601,9 @@ do_ClientMessage (XEvent *eventp)
 
     if (mname) XFree (mname);
 
-    if (e->format == 32 
-        && e->message_type == wm_protocols 
-        && (Atom) e->data.l[0] == wm_delete_window) 
+    if (e->format == 32
+        && e->message_type == wm_protocols
+        && (Atom) e->data.l[0] == wm_delete_window)
         exit (0);
 }
 
@@ -814,8 +814,8 @@ do_RRNotify (XEvent *eventp)
 
 
 static void
-set_sizehints (XSizeHints *hintp, int min_width, int min_height, 
-	       int defwidth, int defheight, int defx, int defy, 
+set_sizehints (XSizeHints *hintp, int min_width, int min_height,
+	       int defwidth, int defheight, int defx, int defy,
 	       char *geom)
 {
     int geom_result;
@@ -998,7 +998,7 @@ main (int argc, char **argv)
 	      default:
 		usage ();
 	    }				/* end switch on - */
-	} else 
+	} else
 	  usage ();
     }					/* end for over argc */
 
@@ -1042,19 +1042,19 @@ main (int argc, char **argv)
             }
             XFree (xim_styles);
         }
-    } 
+    }
 
     screen = DefaultScreen (dpy);
 
     /* select for all events */
     attr.event_mask = KeyPressMask | KeyReleaseMask | ButtonPressMask |
 			   ButtonReleaseMask | EnterWindowMask |
-			   LeaveWindowMask | PointerMotionMask | 
+			   LeaveWindowMask | PointerMotionMask |
 			   Button1MotionMask |
 			   Button2MotionMask | Button3MotionMask |
 			   Button4MotionMask | Button5MotionMask |
 			   ButtonMotionMask | KeymapStateMask |
-			   ExposureMask | VisibilityChangeMask | 
+			   ExposureMask | VisibilityChangeMask |
 			   StructureNotifyMask | /* ResizeRedirectMask | */
 			   SubstructureNotifyMask | SubstructureRedirectMask |
 			   FocusChangeMask | PropertyChangeMask |
@@ -1071,7 +1071,7 @@ main (int argc, char **argv)
 	XSelectInput(dpy, w, attr.event_mask);
     } else {
 	set_sizehints (&hints, OUTER_WINDOW_MIN_WIDTH, OUTER_WINDOW_MIN_HEIGHT,
-		       OUTER_WINDOW_DEF_WIDTH, OUTER_WINDOW_DEF_HEIGHT, 
+		       OUTER_WINDOW_DEF_WIDTH, OUTER_WINDOW_DEF_HEIGHT,
 		       OUTER_WINDOW_DEF_X, OUTER_WINDOW_DEF_Y, geom);
 
 	if (reverse) {
@@ -1110,10 +1110,10 @@ main (int argc, char **argv)
     }
 
     if (xim && xim_style) {
-        xic = XCreateIC (xim, 
-                         XNInputStyle, xim_style, 
-                         XNClientWindow, w, 
-                         XNFocusWindow, w, 
+        xic = XCreateIC (xim,
+                         XNInputStyle, xim_style,
+                         XNClientWindow, w,
+                         XNFocusWindow, w,
                          NULL);
 
         if (xic == NULL) {
@@ -1293,5 +1293,5 @@ main (int argc, char **argv)
     }
 
     XCloseDisplay (dpy);
-    return 0; 
+    return 0;
 }
