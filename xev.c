@@ -78,7 +78,7 @@ int rr_event_base, rr_error_base;
 static void usage (void) _X_NORETURN;
 
 static void
-prologue (XEvent *eventp, char *event_name)
+prologue (XEvent *eventp, const char *event_name)
 {
     XAnyEvent *e = (XAnyEvent *) eventp;
 
@@ -103,7 +103,7 @@ do_KeyPress (XEvent *eventp)
     KeySym ks;
     KeyCode kc = 0;
     Bool kc_set = False;
-    char *ksname;
+    const char *ksname;
     int nbytes, nmbbytes = 0;
     char str[256+1];
     static char *buf = NULL;
@@ -208,7 +208,7 @@ static void
 do_EnterNotify (XEvent *eventp)
 {
     XCrossingEvent *e = (XCrossingEvent *) eventp;
-    char *mode, *detail;
+    const char *mode, *detail;
     char dmode[10], ddetail[10];
 
     switch (e->mode) {
@@ -248,7 +248,7 @@ static void
 do_FocusIn (XEvent *eventp)
 {
     XFocusChangeEvent *e = (XFocusChangeEvent *) eventp;
-    char *mode, *detail;
+    const char *mode, *detail;
     char dmode[10], ddetail[10];
 
     switch (e->mode) {
@@ -307,7 +307,7 @@ static void
 do_GraphicsExpose (XEvent *eventp)
 {
     XGraphicsExposeEvent *e = (XGraphicsExposeEvent *) eventp;
-    char *m;
+    const char *m;
     char mdummy[10];
 
     switch (e->major_code) {
@@ -325,7 +325,7 @@ static void
 do_NoExpose (XEvent *eventp)
 {
     XNoExposeEvent *e = (XNoExposeEvent *) eventp;
-    char *m;
+    const char *m;
     char mdummy[10];
 
     switch (e->major_code) {
@@ -342,7 +342,7 @@ static void
 do_VisibilityNotify (XEvent *eventp)
 {
     XVisibilityEvent *e = (XVisibilityEvent *) eventp;
-    char *v;
+    const char *v;
     char vdummy[10];
 
     switch (e->state) {
@@ -426,7 +426,7 @@ static void
 do_ConfigureRequest (XEvent *eventp)
 {
     XConfigureRequestEvent *e = (XConfigureRequestEvent *) eventp;
-    char *detail;
+    const char *detail;
     char ddummy[10];
 
     switch (e->detail) {
@@ -465,7 +465,7 @@ static void
 do_CirculateNotify (XEvent *eventp)
 {
     XCirculateEvent *e = (XCirculateEvent *) eventp;
-    char *p;
+    const char *p;
     char pdummy[10];
 
     switch (e->place) {
@@ -482,7 +482,7 @@ static void
 do_CirculateRequest (XEvent *eventp)
 {
     XCirculateRequestEvent *e = (XCirculateRequestEvent *) eventp;
-    char *p;
+    const char *p;
     char pdummy[10];
 
     switch (e->place) {
@@ -500,7 +500,7 @@ do_PropertyNotify (XEvent *eventp)
 {
     XPropertyEvent *e = (XPropertyEvent *) eventp;
     char *aname = XGetAtomName (dpy, e->atom);
-    char *s;
+    const char *s;
     char sdummy[10];
 
     switch (e->state) {
@@ -569,7 +569,7 @@ static void
 do_ColormapNotify (XEvent *eventp)
 {
     XColormapEvent *e = (XColormapEvent *) eventp;
-    char *s;
+    const char *s;
     char sdummy[10];
 
     switch (e->state) {
@@ -611,7 +611,7 @@ static void
 do_MappingNotify (XEvent *eventp)
 {
     XMappingEvent *e = (XMappingEvent *) eventp;
-    char *r;
+    const char *r;
     char rdummy[10];
 
     switch (e->request) {
@@ -922,7 +922,7 @@ main (int argc, char **argv)
     XWindowAttributes wattr;
     unsigned long mask = 0L;
     int done;
-    char *name = "Event Tester";
+    const char *name = "Event Tester";
     Bool reverse = False;
     Bool use_root = False;
     unsigned long back, fore;
