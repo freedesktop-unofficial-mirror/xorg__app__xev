@@ -1126,13 +1126,13 @@ main (int argc, char **argv)
         int rr_major, rr_minor;
 
         if (XRRQueryVersion (dpy, &rr_major, &rr_minor)) {
-            int mask = RRScreenChangeNotifyMask;
+            int rr_mask = RRScreenChangeNotifyMask;
 
             if (rr_major > 1
                 || (rr_major == 1 && rr_minor >= 2))
-                mask |= RRCrtcChangeNotifyMask | RROutputChangeNotifyMask |
-                        RROutputPropertyNotifyMask;
-            XRRSelectInput (dpy, w, mask);
+                rr_mask |= RRCrtcChangeNotifyMask | RROutputChangeNotifyMask |
+                           RROutputPropertyNotifyMask;
+            XRRSelectInput (dpy, w, rr_mask);
         }
     }
 
