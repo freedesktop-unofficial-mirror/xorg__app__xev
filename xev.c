@@ -906,7 +906,7 @@ NULL};
 static int
 parse_backing_store (char *s)
 {
-    int len = strlen (s);
+    size_t len = strlen (s);
     char *cp;
 
     for (cp = s; *cp; cp++) {
