@@ -32,6 +32,9 @@ from the X Consortium.
  * Author:  Jim Fulton, MIT X Consortium
  */
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -907,16 +910,10 @@ static int
 parse_backing_store (char *s)
 {
     size_t len = strlen (s);
-    char *cp;
 
-    for (cp = s; *cp; cp++) {
-	if (isascii (*cp) && isupper (*cp))
-	    *cp = tolower (*cp);
-    }
-
-    if (strncmp (s, "notuseful", len) == 0) return (NotUseful);
-    if (strncmp (s, "whenmapped", len) == 0) return (WhenMapped);
-    if (strncmp (s, "always", len) == 0) return (Always);
+    if (strncasecmp (s, "NotUseful", len) == 0) return (NotUseful);
+    if (strncasecmp (s, "WhenMapped", len) == 0) return (WhenMapped);
+    if (strncasecmp (s, "Always", len) == 0) return (Always);
 
     usage ();
 }
