@@ -6,6 +6,7 @@ xev - print contents of X events
 [\-display \fIdisplayname\fP] [\-geometry \fIgeom\fP]
 [\-bw \fIpixels\fP] [\-bs \fI{NotUseful,WhenMapped,Always}\fP]
 [\-id \fIwindowid\fP] [\-root] [\-s] [\-name \fIstring\fP] [\-rv]
+[\-event \fIevent_mask\fP [\-event \fIevent_mask\fP ...]]
 .SH DESCRIPTION
 .PP
 \fIXev\fP creates a window and then asks the X server to send it
