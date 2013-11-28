@@ -1086,6 +1086,9 @@ main (int argc, char **argv)
 		    usage (NULL);
 		event_mask_specified = True;
 		continue;
+	      case 'v':
+		puts(PACKAGE_STRING);
+		exit(0);
 	      default:
 		goto unrecognized;
 	    }				/* end switch on - */
