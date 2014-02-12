@@ -890,7 +890,7 @@ usage (const char *errmsg)
 "    -event event_mask                   select 'event_mask' events",
 "           Supported event masks: keyboard mouse expose visibility structure",
 "                                  substructure focus property colormap",
-"                                  owner_grab_button randr",
+"                                  owner_grab_button randr button",
 "           This option can be specified multiple times to select multiple",
 "           event masks.",
 "",
@@ -940,6 +940,9 @@ parse_event_mask (const char *s, long event_masks[])
           LeaveWindowMask | PointerMotionMask | Button1MotionMask |
           Button2MotionMask | Button3MotionMask | Button4MotionMask |
           Button5MotionMask | ButtonMotionMask },
+	{ "button",
+          EVENT_MASK_INDEX_CORE,
+          ButtonPressMask | ButtonReleaseMask },
         { "expose",
           EVENT_MASK_INDEX_CORE,
           ExposureMask },

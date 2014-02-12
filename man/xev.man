@@ -62,7 +62,7 @@ The
 option can be specified multiple times to select multiple types of events.
 When not specified, all events are selected.
 Available event masks: keyboard mouse expose visibility structure substructure
-focus property colormap owner_grab_button randr
+focus property colormap owner_grab_button randr button
 .TP 8
 .B \-version
 This option prints the program version and exits.
